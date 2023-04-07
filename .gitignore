@@ -1,7 +1,4 @@
 /.venv
-/hidden.png
-/image.png
-/main.py
-/message.txt
-/output.txt
-/text.py
+__pycache__/
+/media
+

@@ -2,7 +2,18 @@ import argparse
 from PIL import Image
 import numpy as np
 
-def hide_message(image_file, message, output_file):
+def hide_message(image_file, message, message_file, output_file):
+    # get message from file if specified
+    if message is None and message_file is None:
+        raise ValueError('Either message or message_file must be specified')
+    
+    if message is not None and message_file is not None:
+        raise ValueError('Only one of message or message_file can be specified')
+    
+    if message is None:
+        with open(message_file, 'r') as f:
+            message = f.read()
+
     # open image file and convert to numpy array
     img = np.array(Image.open(image_file))
     # get dimensions of image
@@ -45,9 +56,11 @@ def hide_message(image_file, message, output_file):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hide message onto image')
     parser.add_argument('image', type=str, help='the input image file')
-    parser.add_argument('message', type=str, help='the message to hide')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-m', '--message', type=str, help='the message to hide')
+    group.add_argument('-f', '--message_file', type=str, help='the file containing the message to hide')
     parser.add_argument('-o', '--output', type=str, default='hidden.png', help='the output image file')
     args = parser.parse_args()
 
-    hide_message(args.image, args.message, args.output)
+    hide_message(args.image, args.message, args.message_file, args.output)
     print(f"Message successfully hidden in {args.output}")

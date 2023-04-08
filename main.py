@@ -14,6 +14,8 @@ class SteganographyGUI(tk.Frame):
         self.master.geometry("700x400")
         self.master.resizable(False, False)
         self.pack(fill=tk.BOTH, expand=True)
+        self.style = ttk.Style()
+        self.style.theme_use("darkly")
         self.create_widgets()
 
     def create_widgets(self):
@@ -37,17 +39,31 @@ class SteganographyGUI(tk.Frame):
         about_button = ttk.Button(top_frame, text="About", command=self.show_about_frame)
         about_button.pack(side=tk.LEFT, padx=5, pady=5)
 
+        # Create a drop-down menu for themes
+        theme_frame = ttk.Frame(top_frame)
+        theme_frame.pack(side=tk.RIGHT, padx=10, pady=5)
+        theme_label = ttk.Label(theme_frame, text="Theme:")
+        theme_label.pack(side="left", pady=5)
+        theme_var = tk.StringVar()
+        theme_dropdown = ttk.Combobox(
+            theme_frame, 
+            textvariable=theme_var, 
+            values=["darkly", "flatly", "litera"], 
+            state="readonly", 
+            width=8,
+        )
+        theme_dropdown.pack(side=tk.LEFT, padx=5, pady=5)
+        theme_dropdown.current(0)
+        theme_dropdown.bind("<<ComboboxSelected>>", lambda event, theme_var=theme_var: self.change_theme(theme_var.get()))
+
         # Create the home frame
         self.home_frame = ttk.Frame(self)
         self.home_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Define Steganography
         steganography_text = "Steganography is the practice of concealing a file, message, image, or video within another file, message, image, or video."
-
         home_label = ttk.Label(self.home_frame, text=f"Welcome to Steganography APP!\n\n{steganography_text}")
         home_label.pack(padx=10, pady=10)
 
-        # Add a link to a tutorial
         tutorial_label = ttk.Label(self.home_frame, text="Click here for a short tutorial on Steganography", foreground="blue", cursor="hand2")
         tutorial_label.pack(padx=10, pady=10)
         tutorial_label.bind("<Button-1>", lambda e: webbrowser.open_new("https://en.wikipedia.org/wiki/Steganography"))
@@ -88,15 +104,11 @@ class SteganographyGUI(tk.Frame):
         self.extract_frame.pack_forget()
         self.about_frame.pack(fill=tk.BOTH, expand=True)
 
+    def change_theme(self, theme):
+        self.master.style = ttk.Style(theme=theme)
+        self.master.style.theme_use(theme)
+        self.about_frame.update_logo(theme)
+
 root = tk.Tk()
-
-# Set the theme
-style = ttk.Style(theme="darkly")
-style.theme_use("darkly")
-
-# Root configuration
-root.option_add("*Entry.state.disabled", {"cursor": "arrow"})
-root.option_add("*Text.state.disabled", {"cursor": "arrow"})
-
 app = SteganographyGUI(master=root)
 app.mainloop()

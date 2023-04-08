@@ -9,9 +9,16 @@ class AboutGUI(tk.Frame):
 
     def create_widgets(self):
         # GitHub logo label
-        github_logo = tk.PhotoImage(file="assets/github-mark-white.png")
-        github_label = tk.Label(self, image=github_logo, cursor="hand2")
-        github_label.image = github_logo
-        github_label.pack(side="top", padx=10, pady=5)
-        github_label.bind("<Button-1>", lambda event: webbrowser.open_new("https://github.com/Formalemon/Steganography"))
+        self.github_logo = tk.PhotoImage(file="assets/github-mark-white.png")
+        self.github_logo_light = tk.PhotoImage(file="assets/github-mark.png")
+        self.github_label = tk.Label(self, image=self.github_logo, cursor="hand2")
+        self.github_label.image = self.github_logo
+        self.github_label.pack(side="top", padx=10, pady=5)
+        self.github_label.bind("<Button-1>", lambda event: webbrowser.open_new("https://github.com/Formalemon/Steganography"))
+        
+    def update_logo(self, theme):
+        if theme == "darkly":
+            self.github_label.config(image=self.github_logo)
+        else:
+            self.github_label.config(image=self.github_logo_light)
 

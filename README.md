@@ -26,7 +26,7 @@ reference: https://code.visualstudio.com/docs/python/environments
 
 Next install the Pillow library and numpy, run the following command:
 ```bash
-pip install pillow numpy
+pip install pillow numpy ttkbootstrap
 ```
 
 
@@ -37,31 +37,34 @@ To run the application, run the following command:
 python main.py
 ```
 Few things to note *(please read before using the GUI)*:
-- When hiding the text in the image, all the fields are required. 
-    - The Input file is the image file that you want to hide the text in. 
-    - The Output file is the name of the image file that will be created after the text is hidden in the image.
-    - The Message is the text that you want to hide in the image. The Message file is the text file that contains the text that you want to hide in the image. If you want to hide the text from a text file, then you can select the Message file option and select the text file.
-- When extracting the text from the image, only the Input file is required and output field is required.
-    - The Input file is the image file that you want to extract the text from.
-    - The Output file is the name of the text file that will be created after the text is extracted from the image.
-    > **Note:** Name the output file with the `.txt` extension and select the `All Files` option in the file dialog box.
+- In Hide Message:
+    - The message can be either a text file or a string.
+    - The password is optional, but if you want to use it, make sure to **remember** it.
+    - Password defaults to `ididnotsetapassword` if not provided.
+- In Extract Message:
+    - The password is optional, but if you used it to hide the message, you **must** use it to extract the message.
+    - The extracted message will be saved in a text file as well as displayed in the window.
+    - You will get errors where the message is not extracted properly if you use a wrong password or if the image is not a steganographed image.
+
     
 
 ### Running the hide_message.py and extract_message.py files individually.
 To run the application which hides the text in the image, run the following command:
 ```bash
-python hide_message.py <image_file> (-m MESSAGE | -f MESSAGE_FILE) [output_file]
+python hide_message.py (image_file) (-m MESSAGE | -f MESSAGE_FILE) -p [password] -o [output_file]
 ```
 
 To run the application that extracts the text from the image, run the following command:
 ```bash
-python extract_message.py <image_file> [output_file_txt]
+python extract_message.py (image_file) -p [password] -o [output_file_txt]
 ```
 
 ## TODO _(in priority order)_
-- [ ] Dark mode.
-- [ ] Simpler and more user-friendly GUI.
-- [ ] Better error handling.
-- [ ] Simpler documentation.
+- [x] Dark mode.
+- [x] Simpler and more user-friendly GUI.
+- [x] Better error handling.
+- [x] Simpler documentation.
+- [ ] Make application switchable between light and dark mode.
+- [ ] Add a password generator and store it as well.
 - [ ] Make a standalone executable file.
-- [ ] Add more steganography methods.
+- ~~[ ] Add more steganography methods.~~ _i'm not sure if i want to do this_

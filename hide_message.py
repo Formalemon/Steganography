@@ -1,8 +1,35 @@
 import argparse
 from PIL import Image
 import numpy as np
+import hashlib
 
-def hide_message(image_file, message, message_file, output_file):
+def encrypt_message(message, password):
+    # hash the password to get a key
+    hashed_password = hashlib.sha256(password.encode()).digest()
+    # convert message to binary
+    binary_message = ''.join(format(ord(c), '08b') for c in message)
+    # add null terminator to binary message
+    binary_message += '00000000'
+    # add message length to binary message
+    binary_message = format(len(message), '032b') + binary_message
+    # convert binary message to bytes
+    message_bytes = bytearray()
+    for i in range(0, len(binary_message), 8):
+        byte = binary_message[i:i+8]
+        message_bytes.append(int(byte, 2))
+
+    # xor message bytes with hashed password bytes
+    encrypted_message = bytearray()
+    for i in range(len(message_bytes)):
+        encrypted_message.append(message_bytes[i] ^ hashed_password[i % len(hashed_password)])
+
+    # convert encrypted message to binary
+    encrypted_binary = ''.join(format(b, '08b') for b in encrypted_message)
+
+    return encrypted_binary
+
+
+def hide_message(image_file, message, message_file, password, output_file):
     # get message from file if specified
     if message is None and message_file is None:
         raise ValueError('Either message or message_file must be specified')
@@ -18,6 +45,9 @@ def hide_message(image_file, message, message_file, output_file):
     img = np.array(Image.open(image_file))
     # get dimensions of image
     height, width, channels = img.shape
+
+    # encrypt message
+    message = encrypt_message(message, password)
 
     # convert message to binary
     binary_message = ''.join(format(ord(c), '08b') for c in message)
@@ -59,8 +89,9 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-m', '--message', type=str, help='the message to hide')
     group.add_argument('-f', '--message_file', type=str, help='the file containing the message to hide')
+    parser.add_argument('-p', '--password', type=str, default='ididnotsetapassword', help='the password to encrypt the message with')
     parser.add_argument('-o', '--output', type=str, default='hidden.png', help='the output image file')
     args = parser.parse_args()
 
-    hide_message(args.image, args.message, args.message_file, args.output)
+    hide_message(args.image, args.message, args.message_file, args.password, args.output)
     print(f"Message successfully hidden in {args.output}")

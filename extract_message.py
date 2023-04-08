@@ -1,8 +1,38 @@
 import argparse
 from PIL import Image
 import numpy as np
+import hashlib
 
-def extract_message(image_file, output_file):
+def decrypt_message(encrypted_message, password):
+    # hash the password to get a key
+    hashed_password = hashlib.sha256(password.encode()).digest()
+
+    # convert encrypted message to bytes
+    encrypted_message_bytes = bytearray()
+    for i in range(0, len(encrypted_message), 8):
+        byte = encrypted_message[i:i+8]
+        encrypted_message_bytes.append(int(byte, 2))
+
+    # xor encrypted message bytes with hashed password bytes
+    decrypted_message = bytearray()
+    for i in range(len(encrypted_message_bytes)):
+        decrypted_message.append(encrypted_message_bytes[i] ^ hashed_password[i % len(hashed_password)])
+
+    # convert decrypted message to binary
+    decrypted_binary = ''.join(format(b, '08b') for b in decrypted_message)
+
+    # extract message length and message from binary
+    message_length = int(decrypted_binary[:32], 2)
+    binary_message = decrypted_binary[32:32+8*message_length]
+
+    # convert binary message to text
+    message = ''
+    for i in range(0, len(binary_message), 8):
+        message += chr(int(binary_message[i:i+8], 2))
+
+    return message
+
+def extract_message(image_file, password, output_file):
     # open image file and convert to numpy array
     img = np.array(Image.open(image_file))
     # get dimensions of image
@@ -38,17 +68,24 @@ def extract_message(image_file, output_file):
     for i in range(0, len(binary_message), 8):
         message += chr(int(binary_message[i:i+8], 2))
 
+    # decrypt message
+    message = decrypt_message(message, password)
+
     # save extracted message to file
-    with open(output_file, 'w') as f:
-        f.write(message)
+    try:
+        with open(output_file, 'w') as f:
+            f.write(message)
+    except UnicodeEncodeError:
+        pass
 
     return message
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract message from image')
     parser.add_argument('image', type=str, help='image file')
+    parser.add_argument('-p', '--password', type=str, default='ididnotsetapassword', help='password')
     parser.add_argument('-o', '--output', type=str, default='output.txt', help='output file')
     args = parser.parse_args()
 
-    message = extract_message(args.image, args.output)
-    print(f"Extracted message: {message}")
+    message = extract_message(args.image, args.password, args.output)
+    # print(f"Extracted message: {message}")

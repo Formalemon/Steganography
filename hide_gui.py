@@ -45,7 +45,6 @@ class HideGUI(tk.Frame):
         self.password_toggle_button = password_toggle_button
 
         # Output file
-
         output_frame = ttk.Frame(self)
         output_frame.pack(fill="x", padx=10, pady=5)
         output_label = ttk.Label(output_frame, text="Output file:")

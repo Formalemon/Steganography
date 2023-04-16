@@ -45,10 +45,16 @@ Few things to note *(please read before using the GUI)*:
     - The password is optional, but if you used it to hide the message, you **must** use it to extract the message.
     - The extracted message will be saved in a text file as well as displayed in the window.
     - You will get errors where the message is not extracted properly if you use a wrong password or if the image is not a steganographed image.
+- In Password Generation:
+    - You can generate a password of any length, but it is recommended to use a password of length 8 or more.
+    - Use it to generate passwords for hiding messages.
+    - The generated password will be displayed in the window as well as saved in a sqlite database.
+    - The database is stored in the `passwords.db` file.
+    - This is a very basic implementation of a password manager, so it is not recommended to use it for storing passwords for other purposes. [Very Basic Implementation with no safety features.]
 
     
 
-### Running the hide_message.py and extract_message.py files individually.
+### Running the hide_message.py, extract_message.py and password_generator.py files individually.
 To run the application which hides the text in the image, run the following command:
 ```bash
 python hide_message.py (image_file) (-m MESSAGE | -f MESSAGE_FILE) -p [password] -o [output_file]
@@ -59,12 +65,22 @@ To run the application that extracts the text from the image, run the following 
 python extract_message.py (image_file) -p [password] -o [output_file_txt]
 ```
 
+To run the application that generates a password, run the following command:
+```bash
+python password_generator.py -h
+```
+> This will display the help message for the password generator. The usage and the arguments that can be passed to the application will be shown.
+
 ## TODO _(in priority order)_
 - [x] Dark mode.
 - [x] Simpler and more user-friendly GUI.
 - [x] Better error handling.
 - [x] Simpler documentation.
-- [ ] Make application switchable between light and dark mode.
-- [ ] Add a password generator and store it as well.
+- [x] Make application switchable between light and dark mode.
+- [x] Add a password generator and store it as well.
+- [ ] Code optimization and less mess.
+- [ ] Readable code.
+- [ ] Add more comments.
+- [ ] Make a secure password manager.
 - [ ] Make a standalone executable file.
 - ~~[ ] Add more steganography methods.~~ _i'm not sure if i want to do this_

@@ -4,6 +4,7 @@ import webbrowser
 import hide_gui
 import extract_gui
 import about_gui
+import password_gui
 
 
 class SteganographyGUI(tk.Frame):
@@ -11,7 +12,7 @@ class SteganographyGUI(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Steganography Tool")
-        self.master.geometry("700x400")
+        self.master.geometry("713x400")
         self.master.resizable(False, False)
         self.pack(fill=tk.BOTH, expand=True)
         self.style = ttk.Style()
@@ -38,6 +39,10 @@ class SteganographyGUI(tk.Frame):
         # Create the About button
         about_button = ttk.Button(top_frame, text="About", command=self.show_about_frame)
         about_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+        # Create the Password Generation button
+        password_button = ttk.Button(top_frame, text="Password Generation", command=self.show_password_frame)
+        password_button.pack(side=tk.LEFT, padx=5, pady=5)
 
         # Create a drop-down menu for themes
         theme_frame = ttk.Frame(top_frame)
@@ -80,29 +85,44 @@ class SteganographyGUI(tk.Frame):
         self.about_frame = about_gui.AboutGUI(self)
         self.about_frame.pack_forget()
 
+        # Create the password generation frame
+        self.password_frame = password_gui.PasswordGUI(self)
+        self.password_frame.pack_forget()
+
     def show_home_frame(self):
         self.hide_frame.pack_forget()
         self.extract_frame.pack_forget()
         self.about_frame.pack_forget()
+        self.password_frame.pack_forget()
         self.home_frame.pack(fill=tk.BOTH, expand=True)
 
     def show_hide_frame(self):
         self.home_frame.pack_forget()
         self.extract_frame.pack_forget()
         self.about_frame.pack_forget()
+        self.password_frame.pack_forget()
         self.hide_frame.pack(fill=tk.BOTH, expand=True)
 
     def show_extract_frame(self):
         self.home_frame.pack_forget()
         self.hide_frame.pack_forget()
         self.about_frame.pack_forget()
+        self.password_frame.pack_forget()
         self.extract_frame.pack(fill=tk.BOTH, expand=True)
 
     def show_about_frame(self):
         self.home_frame.pack_forget()
         self.hide_frame.pack_forget()
         self.extract_frame.pack_forget()
+        self.password_frame.pack_forget()
         self.about_frame.pack(fill=tk.BOTH, expand=True)
+
+    def show_password_frame(self):
+        self.home_frame.pack_forget()
+        self.hide_frame.pack_forget()
+        self.extract_frame.pack_forget()
+        self.about_frame.pack_forget()
+        self.password_frame.pack(fill=tk.BOTH, expand=True)
 
     def change_theme(self, theme):
         self.master.style = ttk.Style(theme=theme)
